@@ -1,6 +1,6 @@
 # SOLID Principles
 ### S
-Single responsibility principle. (ควรทำ Task เพียงส่วนที่ต้องทำหรือเกี่ยวของกัน)
+Single responsibility principle. (Class 1 Class ควรมีหน้าที่แค่ 1 หน้าที่)
 - A class should only have one responsibility
 - This separates different tasks, problems, and concerns into different classes handling
 
