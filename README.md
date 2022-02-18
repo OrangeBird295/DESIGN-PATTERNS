@@ -51,3 +51,49 @@ Class 1 Class ควรมีหน้าที่แค่ 1 หน้าที
 
 - High-level modules should not depend upon low-level ones, both should depend upon abstractions 
 - Abstractions should not depend upon details, details should depend upon abstractions
+
+##
+
+### COMPOSITE
+`การออกแบบโครงสร้าง Object `
+
+**ปัญหา:** object ที่มีการ Group กันหรือซ้อนกันทำให้แก้ได้ยาก เช่น การ Implement ซ้อนกันเรื่อยๆ  
+
+**แก้โดย** จัดการตัว Object ที่ซ้อนกันเป็นลำดับชั้นลงมาเรื่อยๆ จะเป็นการกำหนดการทำงานหรือสั่งทั้ง Group โดยครั้งเดียว
+
+**Idea:** มอง Object ให้เป็น 2 ประเภท 
+
+ - 1.Leaf ไม่มีตัวซ้อนต่อ  
+ - 2.Composite มีตัวซ้อนต่อ -> เป็นแค่โครงสร้างหรือกลุ่มของ Object เมื่อใดมีคำสั่ง จะส่งคำสั่งไปยังตัวประกอบทุกตัว(Leaf)   [Composite อาจซ้อนด้วย Composite อีกทีได้]
+
+**ข้อดี**
+
+- สามารถจัดการ Object ที่ถูก Group ได้ง่าย
+- Client Interact รูปแบบเดียว
+- Add Composite ง่าย
+
+**ข้อเสีย**
+
+- ขัดกับ SOLID ตัวที่ [ I ]
+- ใส่ข้อจำกัดอย่างเฉพาะเจาะจงหรืออย่างใดอย่างหนึ่งยาก
+
+##
+
+### STRATEGY
+`พฤติกกรมของ Object `
+
+**ปัญหา:** Object บาง Object มีการทำงานไม่หมือนกันทุกตัวจึงไม่สามารถใช้การ Implement หรือการใช้ f(x) กับทุกตัวได้
+
+**แก้โดย** นำ Algorithm ที่ต้องการ Implement ทำเป็น Class แยกอัน ซึ่งเมื่อเวลาจะเรียกใช้ก็ให้นำตัว Object ไปเรียกที่ตัว Class นั้นๆ แทน (Object ไม่จำเป็นต้องรู้ว่า Algorithm เปลี่ยนแปลงยังไงมีหน้าที่แค่เรียกก็พอ) ซึ่ง Class ที่แยกออกมาจะเรียกว่า STRATEGY
+
+**ข้อดี**
+
+- สามารถเพิ่ม STRATEGY ได้เรื่อยๆ ตราบใดที่มีการเรียกใช้งานแบบเดียวกัน
+
+**ข้อเสีย**
+
+- Maintain code ยาก เรื่องจากต้องไปโยงกับตัว Context หรือใน Code ก็คือ TextComposite, TextLeaf
+- เราต้องรู้ว่ามี STRATEGY อะไรให้เรียกใช้บาง
+- เรียกข้าม Class บ่อยจึงเกิด Overhead(เปลืองทรัพยากร)
+- จำนวน Object เพื่มตาม STRATEGY
+ 
