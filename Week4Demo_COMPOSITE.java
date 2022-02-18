@@ -1,76 +1,138 @@
 import java.util.ArrayList;
 
-class TextComposite {
-    ArrayList<TextComposite> group;
-    char character;
-    String colour;
+interface TextComponent {
+
+    public void setColour(String newColour);
+    public void print(int depth);
+    public void add(TextComponent child);
+    public TextComponent getChild(int index);
+    public void setCharacter(char aChar);
+    public TextComponent getCharacter();
+}
+
+class TextComposite implements TextComponent {
+
+    ArrayList<TextComponent> group;
 
     public TextComposite() {
-        group = new ArrayList<TextComposite>();
-        colour = "BLACK";
+        group = new ArrayList<TextComponent>();
     }
 
-    public void setCharacter(char aChar) {
-        character = aChar;
+    @Override
+    public void print(int depth) {
+
+        for (int i = 1; i <= depth; i++) {
+            System.out.println(" ");
+        }
+        System.out.println("[" + depth + "] >> is a group");
+        for (TextComponent child : group) {
+            child.print(depth + 1);
+        }
     }
 
-    public char getCharacter() {
-        return character;
-    }
-
-    public void add(TextComposite child) {
-        group.add(child);
-    }
-
-    public TextComposite getChild(int index) {
-        return group.get(index);
-    }
-
+    @Override
     public void setColour(String newColour) {
-        colour = newColour;
-        for (TextComposite child : group) {
+
+        for (TextComponent child : group) {
             child.setColour(newColour);
         }
     }
 
-    public void print(int depth) {
-        System.out.println("[" + depth + "] " + character + ": colour is " + colour);
-        for (TextComposite child : group) {
-            child.print(depth + 1);
-        }
+    @Override
+    public void add(TextComponent child) {
+
+        group.add(child);
     }
+
+    @Override
+    public TextComponent getChild(int index) {
+
+        return group.getChild(index);
+    }
+
+}
+
+class TextLeft implements TextComponent {
+
+    char character;
+    String colour;
+
+    public TextLeft() {
+        colour = "BLACK";
+    }
+
+    @Override
+    public void print(int depth) {
+
+        for (int i = 1; i <= depth; i++) {
+            System.out.println(" ");
+        }
+        
+        System.out.println("[" + depth + "]" + character + ": colour is " + colour);
+    }
+
+    @Override
+    public void setColour(String newColour) {
+
+        this.colour = newColour;
+    }
+
+    @Override
+    public TextComponent getChild(int index) {
+
+        return this.character;
+    }
+
+    @Override
+    public void setCharacter(char aChar) {
+
+        this.character = aChar;
+    }
+
 }
 
 class Week4Demo_COMPOSITE {
+
     public static void main(String[] args) {
-        TextComposite aPage = new TextComposite();
-        aPage.setCharacter('A');
-        TextComposite lineOne = new TextComposite();
-        TextComposite charOne = new TextComposite();
+
+        TextComponent aPage = new TextComposite();
+        TextComponent lineOne = new TextComposite();
+        TextComponent charOne = new TextComposite();
         charOne.setCharacter('B');
-        TextComposite charTwo = new TextComposite();
+        TextComponent charTwo = new TextComposite();
         charTwo.setCharacter('C');
-        TextComposite charThree = new TextComposite();
+        TextComponent charThree = new TextComposite();
         charThree.setCharacter('D');
-        TextComposite groupOne = new TextComposite();
-        TextComposite charFour = new TextComposite();
-        charFour.setCharacter('E');
-        TextComposite charFive = new TextComposite();
-        charFive.setCharacter('F');
-        groupOne.add(charFour);
-        groupOne.add(charFive);
+
         lineOne.add(charOne);
         lineOne.add(charTwo);
         lineOne.add(charThree);
+
+        TextComponent charFour = new TextComposite();
+        charFour.setCharacter('E');
+        TextComponent charFive = new TextComposite();
+        charFive.setCharacter('F');
+        TextComponent groupOne = new TextComposite();
+        groupOne.add(charFour);
+        groupOne.add(charFive);
+
         lineOne.add(groupOne);
+
         aPage.add(lineOne);
+
         aPage.print(0);
         System.out.println();
+
         groupOne.setColour("RED");
         aPage.print(0);
         System.out.println();
-        aPage.setColour("GREEN");
+
+        charThree.setColour("BLUE");
         aPage.print(0);
         System.out.println();
+
+        aPage.setColour("GREEN");
+        aPage.print(0);
+        System.out.println();  
     }
 }
