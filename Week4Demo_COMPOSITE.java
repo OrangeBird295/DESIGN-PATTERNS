@@ -12,6 +12,7 @@ interface TextComponent {
 
 class TextComposite implements TextComponent {
 
+    char character;
     ArrayList<TextComponent> group;
 
     public TextComposite() {
@@ -48,6 +49,12 @@ class TextComposite implements TextComponent {
     public TextComponent getChild(int index) {
 
         return group.getChild(index);
+    }
+
+    @Override
+    public void setCharacter(char aChar) {
+
+        this.character = aChar;
     }
 
 }

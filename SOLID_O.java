@@ -48,6 +48,8 @@ class ColorSpecification implements Specification<Product> {
 
     @Override
     public boolean isSatisfied(Product item) {
+        // System.out.println(item +""+ color);
+        // System.out.println(item.color +""+color);
         return item.color == color;
     }
 }
