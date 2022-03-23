@@ -1,12 +1,97 @@
 import java.util.ArrayList;
 
-import Token.Type;
-
 abstract class Expression {
+
     public abstract double eval();
+
+    public abstract void accept(ExpressionVisitor visitor);
 }
 
-// TERMINAL EXPRESSION ไม่มีอะไรมาต่อเสมือน Left node
+interface ExpressionVisitor {
+
+    void visit(DoubleExpression e);
+
+    void visit(BinaryExpression e);
+}
+
+class ExpressionCalculator implements ExpressionVisitor {
+
+    private double result;
+
+    @Override
+    public void visit(DoubleExpression e) {
+
+        result = e.value;
+    }
+
+    @Override
+    public void visit(BinaryExpression e) {
+
+        double left, right;
+        e.left.accept(this);
+        left = result;
+        e.right.accept(this);
+        right =result;
+
+        switch(e.type){
+            case ADDITION:
+                result = left + right;
+                break;
+            case SUBTRACTION:
+                result = left - right;
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public String toString(){
+        return "" + result;    
+    }
+
+}
+
+class ExpressionPrinter implements ExpressionVisitor {
+
+    private StringBuilder sb = new StringBuilder();
+
+    @Override
+    public void visit(DoubleExpression e) {
+
+        sb.append(e.value);
+    }
+
+    @Override
+    public void visit(BinaryExpression e) {
+
+        // (left+right)
+        sb.append("(");
+
+        e.left.accept(this);
+
+        switch (e.type) {
+            case ADDITION:
+                sb.append("+");
+                break;
+            case SUBTRACTION:
+                sb.append("-");
+                break;
+            default:
+                break;
+        }
+        e.right.accept(this);
+        sb.append(")");
+    }
+
+    @Override
+    public String toString() {
+
+        return sb.toString();
+    }
+}
+
+// TERMINAL EXPRESSION
 class DoubleExpression extends Expression {
 
     public double value;
@@ -19,9 +104,15 @@ class DoubleExpression extends Expression {
     public double eval() {
         return value;
     }
+
+    @Override
+    public void accept(ExpressionVisitor visitor) {
+
+        visitor.visit(this);
+    }
 }
 
-// NON-TERMINAL EXPRESSION -> มี Expression อื่นๆ มาประกอบ
+// NON-TERMINAL EXPRESSION
 class BinaryExpression extends Expression {
 
     public enum Type {
@@ -49,6 +140,12 @@ class BinaryExpression extends Expression {
                 return 0;
 
         }
+    }
+
+    @Override
+    public void accept(ExpressionVisitor visitor) {
+
+        visitor.visit(this);
     }
 }
 
@@ -185,7 +282,7 @@ class ArithmeticInterpreter {
 
             }
         }
-        // parenthesis without operators   trap-> 1+(2)
+        // parenthesis without operators trap-> 1+(2)
         if (tempExpression != null && type == null) {
 
             return tempExpression;
@@ -197,7 +294,7 @@ class ArithmeticInterpreter {
     }
 }
 
-class Lab9Demo_INTERPRETER {
+class Lab9Demo_VISITOR {
     public static void main(String[] args) {
 
         String input1 = "1+2+3";
@@ -219,7 +316,7 @@ class Lab9Demo_INTERPRETER {
 
         for (Token token : tokens2) {
 
-        System.out.print(token.toString() + "\t");
+            System.out.print(token.toString() + "\t");
         }
 
         System.out.println();
@@ -229,5 +326,22 @@ class Lab9Demo_INTERPRETER {
         System.out.println(parsed1.eval());
         Expression parsed2 = ArithmeticInterpreter.parse(tokens2);
         System.out.println(parsed2.eval());
+
+        // ======VISITOR======
+        ExpressionPrinter ep1 = new ExpressionPrinter();
+        ep1.visit((BinaryExpression) parsed1);
+        System.out.println(ep1);
+
+        ExpressionPrinter ep2 = new ExpressionPrinter();
+        ep2.visit((BinaryExpression) parsed2);
+        System.out.println(ep2);
+
+        ExpressionCalculator ec1 = new ExpressionCalculator();
+        ec1.visit((BinaryExpression) parsed1);
+        System.out.println(ec1);
+
+        ExpressionCalculator ec2 = new ExpressionCalculator();
+        ec2.visit((BinaryExpression) parsed2);
+        System.out.println(ec2);
     }
 }
